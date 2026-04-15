@@ -1,0 +1,10 @@
+# Flux bootstrap auto-generates these — they get committed by flux bootstrap, not manually
+# Keeping them here prevents accidental manual commits before bootstrap runs
+kubernetes/clusters/homelab/flux-system/gotk-components.yaml
+kubernetes/clusters/homelab/flux-system/gotk-sync.yaml
+
+# Local secrets — use SOPS or Sealed Secrets for anything committed to Git
+*.env
+.env.*
+secrets/
+age.agekey
