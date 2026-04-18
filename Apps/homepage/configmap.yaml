@@ -8,33 +8,39 @@ metadata:
 data:
   kubernetes.yaml: |
     mode: cluster
-  settings.yaml: ""
-  #settings.yaml: |
-  #  providers:
-  #    longhorn:
-  #      url: https://longhorn.my.network
+  settings.yaml: |
+    title: Andor Homelab
+    headerStyle: clean
+    layout:
+      Monitoring:
+        style: row
+        columns: 2
   custom.css: ""
   custom.js: ""
   bookmarks.yaml: |
-    - Developer:
-        - Github:
+    - Homelab:
+        - GitHub Repo:
             - abbr: GH
-              href: https://github.com/
+              href: https://github.com/kola0031/homelab
   services.yaml: |
-    - My First Group:
-        - My First Service:
-            href: http://localhost/
-            description: Homepage is awesome
+    - Monitoring:
+        - Grafana:
+            href: http://grafana.local
+            description: Metrics dashboards
+            icon: grafana.png
+            widget:
+              type: grafana
+              url: http://prometheus-grafana.monitoring.svc.cluster.local
+              username: admin
+              password: "{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}"
 
-    - My Second Group:
-        - My Second Service:
-            href: http://localhost/
-            description: Homepage is the best
-
-    - My Third Group:
-        - My Third Service:
-            href: http://localhost/
-            description: Homepage is 😎
+        - Prometheus:
+            href: http://prometheus.local
+            description: Metrics collection
+            icon: prometheus.png
+            widget:
+              type: prometheus
+              url: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
   widgets.yaml: |
     - kubernetes:
         cluster:
@@ -42,7 +48,7 @@ data:
           cpu: true
           memory: true
           showLabel: true
-          label: "cluster"
+          label: "andor-cluster"
         nodes:
           show: true
           cpu: true
@@ -53,9 +59,9 @@ data:
         expanded: true
         cpu: true
         memory: true
-        network: default
     - search:
         provider: duckduckgo
         target: _blank
   docker.yaml: ""
   proxies.yaml: ""
+  proxmox.yaml: ""
