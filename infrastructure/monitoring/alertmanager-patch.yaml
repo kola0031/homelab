@@ -1,0 +1,10 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
+metadata:
+  name: prometheus-kube-prometheus-alertmanager
+  namespace: monitoring
+spec:
+  alertmanagerConfigSelector:
+    matchLabels:
+      alertmanagerConfig: homelab
+  alertmanagerConfigNamespaceSelector: {}

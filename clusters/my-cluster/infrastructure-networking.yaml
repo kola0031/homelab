@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 10m
   dependsOn:
-    - name: infrastructure-crds
+    - name: infrastructure-envoy-gateway
   path: ./infrastructure/networking
   prune: true
   sourceRef:

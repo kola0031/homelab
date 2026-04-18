@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: homelab-node-alerts
-  namespace: default
+  namespace: monitoring
   labels:
     release: prometheus   # must match your helm release name
 spec:

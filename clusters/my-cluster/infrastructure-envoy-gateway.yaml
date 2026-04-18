@@ -5,6 +5,8 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
+  dependsOn:
+    - name: infrastructure-crds
   path: ./infrastructure/envoy-gateway
   prune: true
   sourceRef:

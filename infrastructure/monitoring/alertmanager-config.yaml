@@ -1,0 +1,52 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: homelab-email
+  namespace: monitoring
+  labels:
+    alertmanagerConfig: homelab
+spec:
+  route:
+    receiver: email-receiver
+    groupBy: ['alertname', 'severity']
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+    matchers:
+    - name: severity
+      matchType: =~
+      value: "warning|critical"
+
+  receivers:
+  - name: email-receiver
+    emailConfigs:
+    - to: "tolanitkolawolel@gmail.com"
+      from: "tolanitkolawole@gmail.com"
+      smarthost: "smtp.gmail.com:587"
+      authUsername: "tolanitkolawole@gmail.com"
+      authPassword:
+        name: alertmanager-email-secret
+        key: email-password
+      requireTLS: true
+      sendResolved: true
+      headers:
+        subject: '[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }} - Andor Homelab'
+      html: |
+        <h2>{{ .Status | toUpper }}: {{ .GroupLabels.alertname }}</h2>
+        {{ range .Alerts }}
+        <p>
+          <b>Summary:</b> {{ .Annotations.summary }}<br/>
+          <b>Description:</b> {{ .Annotations.description }}<br/>
+          <b>Severity:</b> {{ .Labels.severity }}<br/>
+          <b>Started:</b> {{ .StartsAt }}<br/>
+        </p>
+        {{ end }}
+
+  inhibitRules:
+  - sourceMatch:
+    - name: severity
+      value: critical
+    targetMatch:
+    - name: severity
+      value: warning
+    equal: ['alertname']
