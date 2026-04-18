@@ -30,7 +30,8 @@ spec:
       requireTLS: true
       sendResolved: true
       headers:
-        subject: '[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }} - Andor Homelab'
+        - key: subject
+          value: '[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }} - Andor Homelab'
       html: |
         <h2>{{ .Status | toUpper }}: {{ .GroupLabels.alertname }}</h2>
         {{ range .Alerts }}
