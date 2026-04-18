@@ -8,7 +8,7 @@ metadata:
 spec:
   route:
     receiver: email-receiver
-    groupBy: [ 'alertname', 'severity' ]
+    groupBy: ['alertname', 'severity']
     groupWait: 30s
     groupInterval: 5m
     repeatInterval: 12h
@@ -20,7 +20,7 @@ spec:
   receivers:
   - name: email-receiver
     emailConfigs:
-    - to: "tolanitkola@gmail.com"
+    - to: "tolanitkolawolel@gmail.com"
       from: "tolanitkolawole@gmail.com"
       smarthost: "smtp.gmail.com:587"
       authUsername: "tolanitkolawole@gmail.com"
@@ -30,8 +30,8 @@ spec:
       requireTLS: true
       sendResolved: true
       headers:
-      - key: subject
-        value: '[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }} - Andor Homelab'
+        - key: subject
+          value: '[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }} - Andor Homelab'
       html: |
         <h2>{{ .Status | toUpper }}: {{ .GroupLabels.alertname }}</h2>
         {{ range .Alerts }}
@@ -50,4 +50,4 @@ spec:
     targetMatch:
     - name: severity
       value: warning
-    equal: [ 'alertname' ]
+    equal: ['alertname']
