@@ -5,3 +5,4 @@ resources:
 - infrastructure-crds.yaml
 - infrastructure-networking.yaml
 - apps.yaml
+- infrastructure-envoy-gateway.yaml
