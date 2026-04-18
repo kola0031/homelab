@@ -1,0 +1,48 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: homelab-node-alerts
+  namespace: monitoring
+  labels:
+    release: prometheus   # must match your helm release name
+spec:
+  groups:
+  - name: node.rules
+    interval: 1m
+    rules:
+
+    - alert: NodeHighCPU
+      expr: (1 - avg by(instance)(rate(node_cpu_seconds_total{mode="idle"}[5m]))) * 100 > 80
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High CPU on {{ $labels.instance }}"
+        description: "CPU usage is {{ $value | printf \"%.0f\" }}% on {{ $labels.instance }}"
+
+    - alert: NodeHighMemory
+      expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 > 85
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High memory on {{ $labels.instance }}"
+        description: "Memory usage is {{ $value | printf \"%.0f\" }}% on {{ $labels.instance }}"
+
+    - alert: NodeDiskSpaceLow
+      expr: (1 - node_filesystem_avail_bytes{fstype!="tmpfs",mountpoint="/"} / node_filesystem_size_bytes{fstype!="tmpfs",mountpoint="/"}) * 100 > 80
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Low disk space on {{ $labels.instance }}"
+        description: "Disk usage is {{ $value | printf \"%.0f\" }}% on {{ $labels.instance }}"
+
+    - alert: NodeDown
+      expr: up{job="node-exporter"} == 0
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Node {{ $labels.instance }} is down"
+        description: "Node exporter on {{ $labels.instance }} has been unreachable for 2 minutes"

@@ -6,3 +6,4 @@ resources:
 - infrastructure-networking.yaml
 - apps.yaml
 - infrastructure-envoy-gateway.yaml
+- infrastructure-monitoring.yaml
