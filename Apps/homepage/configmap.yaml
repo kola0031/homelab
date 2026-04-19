@@ -30,7 +30,7 @@ data:
             icon: grafana.png
             widget:
               type: grafana
-              url: http://grafana.local
+              url: http://prometheus-grafana.monitoring.svc.cluster.local
               username: admin
               password: "{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}"
 
@@ -40,7 +40,7 @@ data:
             icon: prometheus.png
             widget:
               type: prometheus
-              url: http://prometheus.local
+              url: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
   widgets.yaml: |
     - kubernetes:
         cluster:
