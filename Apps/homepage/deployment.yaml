@@ -42,7 +42,7 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             - name: HOMEPAGE_ALLOWED_HOSTS
-              value: "homepage.local,*"
+              value: "homepage.local,$(MY_POD_IP)"
             - name: HOMEPAGE_VAR_GRAFANA_PASSWORD
               valueFrom:
                 secretKeyRef:
