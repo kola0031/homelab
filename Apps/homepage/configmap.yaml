@@ -30,7 +30,7 @@ data:
             icon: grafana.png
             widget:
               type: grafana
-              url: http://prometheus-grafana.monitoring.svc.cluster.local
+              url: 10.99.195.105:80
               username: admin
               password: "{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}"
 
