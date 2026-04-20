@@ -48,6 +48,11 @@ spec:
                 secretKeyRef:
                   name: homepage-secrets
                   key: grafana-password
+            - name: HOMEPAGE_VAR_PIHOLE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: pihole-admin
+                  key: password
           resources:
             requests:
               cpu: 100m

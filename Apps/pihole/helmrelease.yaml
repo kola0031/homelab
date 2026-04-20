@@ -18,7 +18,7 @@ spec:
   valuesFrom:
     - kind: Secret
       name: pihole-admin
-      valuesKey: andor
+      valuesKey: password
       targetPath: adminPassword
   values:
     serviceDns:
