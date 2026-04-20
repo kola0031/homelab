@@ -13,3 +13,8 @@ spec:
   - backendRefs:
     - name: pihole
       port: 80
+  - matches:
+     - path:
+         type: PathPrefix
+         value: /
+         
