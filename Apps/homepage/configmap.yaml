@@ -41,6 +41,15 @@ data:
             widget:
               type: prometheus
               url: http://prometheus-kube-prometheus-prometheus.default.svc.cluster.local:9090
+
+    - Utilities:
+        - Pi-hole:
+            href: http://pihole.local
+            description: Network-wide ad blocker
+            icon: pihole.png
+            widget:
+              type: pihole
+              url: http://pihole-web.pihole.svc.cluster.local:80  
   widgets.yaml: |
     - kubernetes:
         cluster:
