@@ -11,7 +11,7 @@ spec:
   - "pihole.local"
   rules:
   - backendRefs:
-    - name: pihole
+    - name: pihole-web
       port: 80
   - matches:
      - path:
