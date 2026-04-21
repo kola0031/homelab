@@ -20,7 +20,7 @@ spec:
   receivers:
   - name: email-receiver
     emailConfigs:
-    - to: "tolanitkolawolel@gmail.com"
+    - to: "tolanitkolaw@gmail.com"
       from: "tolanitkolawole@gmail.com"
       smarthost: "smtp.gmail.com:587"
       authUsername: "tolanitkolawole@gmail.com"

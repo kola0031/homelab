@@ -51,8 +51,8 @@ spec:
             - name: HOMEPAGE_VAR_PIHOLE_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: pihole-admin
-                  key: password
+                  name: homepage-secrets
+                  key: pihole-api-key
           resources:
             requests:
               cpu: 100m
