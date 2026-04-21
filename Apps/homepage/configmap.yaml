@@ -16,16 +16,24 @@ data:
     iconStyle: theme
     useEqualHeights: true
     layout:
+      Cluster:
+        style: row
+        columns: 3
+        icon: mdi-kubernetes
       Monitoring:
         style: row
         columns: 2
         icon: mdi-chart-line
-      Utilities:
+      Network:
         style: row
         columns: 3
-        icon: mdi-toolbox
+        icon: mdi-network
+      GitOps:
+        style: row
+        columns: 2
+        icon: mdi-git
   custom.css: |
-    /* Background */
+    /* Base background */
     body {
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
       background-attachment: fixed;
@@ -40,24 +48,38 @@ data:
     }
 
     .service-card:hover {
-      border-color: rgba(148, 163, 184, 0.25) !important;
+      border-color: rgba(56, 189, 248, 0.3) !important;
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 8px 32px rgba(56, 189, 248, 0.1);
     }
 
-    /* Section headers */
+    /* Widget container */
     #information-widgets {
       background: rgba(15, 23, 42, 0.4);
       backdrop-filter: blur(8px);
       border-radius: 0.75rem;
       border: 1px solid rgba(148, 163, 184, 0.06);
+      margin-bottom: 0.5rem;
     }
 
-    /* Subtle header glow */
+    /* Header */
     #site-header {
       border-bottom: 1px solid rgba(148, 163, 184, 0.08);
       background: rgba(15, 23, 42, 0.7);
       backdrop-filter: blur(16px);
+    }
+
+    /* Section group headers */
+    .service-group-name {
+      color: rgba(148, 163, 184, 0.9) !important;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.75rem !important;
+    }
+
+    /* Bookmark cards */
+    .bookmark-text {
+      font-size: 0.7rem !important;
     }
   custom.js: ""
   bookmarks.yaml: |
@@ -65,11 +87,27 @@ data:
         - GitHub Repo:
             - abbr: GH
               href: https://github.com/kola0031/homelab
+        - Proxmox:
+            - abbr: PX
+              href: https://192.168.4.1:8006
+        - Kubernetes Docs:
+            - abbr: K8
+              href: https://kubernetes.io/docs
+    - Tools:
+        - Cilium Docs:
+            - abbr: CI
+              href: https://docs.cilium.io
+        - Flux Docs:
+            - abbr: FL
+              href: https://fluxcd.io/docs
+        - Gateway API:
+            - abbr: GW
+              href: https://gateway-api.sigs.k8s.io
   services.yaml: |
-    - Monitoring:
+    - Cluster:
         - Grafana:
             href: http://grafana.local
-            description: Metrics dashboards
+            description: Metrics & dashboards
             icon: grafana.png
             widget:
               type: grafana
@@ -85,16 +123,28 @@ data:
               type: prometheus
               url: http://prometheus-kube-prometheus-prometheus.default.svc.cluster.local:9090
 
-    - Utilities:
+        - Alertmanager:
+            href: http://alertmanager.local
+            description: Alert routing
+            icon: alertmanager.png
+
+    - Network:
         - Pi-hole:
-            href: http://pihole.local
+            href: http://pihole.local/admin
             description: Network-wide ad blocker
-            icon: pihole.png
+            icon: pi-hole.png
             widget:
               type: pihole
-              url: http://pihole-web.pihole.svc.cluster.local:80
+              url: http://pihole-web.pihole.svc.cluster.local
               version: 6
               key: "{{HOMEPAGE_VAR_PIHOLE_API_KEY}}"
+
+    - GitOps:
+        - Flux:
+            href: https://github.com/kola0031/homelab
+            description: GitOps — main@andor
+            icon: flux.png
+
   widgets.yaml: |
     - kubernetes:
         cluster:
@@ -113,8 +163,16 @@ data:
         expanded: true
         cpu: true
         memory: true
+        disk: /
+    - datetime:
+        text_size: xl
+        format:
+          timeStyle: short
+          dateStyle: short
+          hourCycle: h23
     - search:
         provider: google
+        focus: false
         target: _blank
   docker.yaml: ""
   proxies.yaml: ""
