@@ -14,7 +14,7 @@ data:
     layout:
       Monitoring:
         style: row
-        columns: 2
+        columns: 3
   custom.css: ""
   custom.js: ""
   bookmarks.yaml: |
