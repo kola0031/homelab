@@ -127,6 +127,9 @@ data:
             href: http://alertmanager.local
             description: Alert routing
             icon: alertmanager.png
+            widget:
+              type: alertmanager
+              url: http://prometheus-kube-prometheus-alertmanager.default.svc.cluster.local:9093
 
     - Network:
         - Pi-hole:
