@@ -5,3 +5,4 @@ resources:
   - gateway.yaml
   - grafana-route.yaml
   - prometheus-route.yaml
+  - alertmanager-route.yaml
