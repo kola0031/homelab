@@ -16,10 +16,10 @@ spec:
   install:
     createNamespace: true
   valuesFrom:
-    - kind: Secret
-      name: pihole-admin
-      valuesKey: password
-      targetPath: adminPassword
+  - kind: Secret
+    name: pihole-admin
+    valuesKey: password
+    targetPath: adminPassword
   values:
     serviceDns:
       type: LoadBalancer
@@ -30,3 +30,4 @@ spec:
         port: 80
     persistentVolumeClaim:
       enabled: true
+      storageClassName: local-path
