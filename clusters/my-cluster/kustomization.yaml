@@ -7,3 +7,5 @@ resources:
 - apps.yaml
 - infrastructure-envoy-gateway.yaml
 - infrastructure-monitoring.yaml
+- infrastructure-longhorn.yaml
+- infrastructure-tailscale.yaml

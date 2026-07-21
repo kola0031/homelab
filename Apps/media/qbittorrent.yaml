@@ -1,0 +1,121 @@
+# qBittorrent's traffic is routed through a gluetun sidecar connected to Surfshark
+# (WireGuard) so torrent traffic never leaves directly on the cluster/Tailscale
+# network path. Containers in the same pod share a network namespace, so
+# qbittorrent's WebUI on :8080 rides through gluetun automatically - no special
+# k8s networking needed, just gluetun's own firewall must allow that port in.
+#
+# Pinned to one specific Surfshark server (VPN_SERVICE_PROVIDER=custom) rather than
+# letting gluetun auto-pick from its Surfshark list - if this server goes offline,
+# update the secret with a new server's details from Surfshark's manual setup page.
+#
+# Server endpoint (us-dtw.prod.surfshark.com) and its public key are not secret,
+# so they're hardcoded below. If this server goes offline, update both here.
+#
+# Prerequisite (create manually, do not commit): a Secret named
+# surfshark-credentials in the media namespace with keys:
+#   private_key - your WireGuard private key (generated locally, never sent to Surfshark)
+#   addresses   - the WireGuard address Surfshark assigned you, from the [Interface]
+#                 Address line of the downloaded config, e.g. 10.14.0.2/16
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: qbittorrent
+  namespace: media
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: app-template
+      version: "3.7.3"
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    # Without this, the chart's own name ("app-template") is used for
+    # app.kubernetes.io/name and the default resource names, instead of "qbittorrent".
+    nameOverride: qbittorrent
+    controllers:
+      main:
+        containers:
+          gluetun:
+            image:
+              repository: qmcgaw/gluetun
+              tag: latest
+            env:
+              VPN_SERVICE_PROVIDER: custom
+              VPN_TYPE: wireguard
+              WIREGUARD_ENDPOINT_IP: "185.141.119.54"
+              WIREGUARD_ENDPOINT_PORT: "51820"
+              WIREGUARD_PUBLIC_KEY: "WFhlLK8H1pRzgMggza5NhBMjIcGhmsCqjR8+yFRfXhg="
+              WIREGUARD_PRIVATE_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: surfshark-credentials
+                    key: private_key
+              WIREGUARD_ADDRESSES:
+                valueFrom:
+                  secretKeyRef:
+                    name: surfshark-credentials
+                    key: addresses
+              # Allow the WebUI port back through gluetun's firewall, since it
+              # otherwise blocks everything except the VPN tunnel.
+              FIREWALL_INPUT_PORTS: "8080"
+            securityContext:
+              capabilities:
+                add: ["NET_ADMIN"]
+          qbittorrent:
+            image:
+              repository: lscr.io/linuxserver/qbittorrent
+              tag: latest
+            env:
+              PUID: "1000"
+              PGID: "1000"
+              TZ: Etc/UTC
+              WEBUI_PORT: "8080"
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: 8080
+    persistence:
+      config:
+        existingClaim: qbittorrent-config
+        globalMounts:
+          - path: /config
+      media:
+        # Whole PVC at the same /data path used by jellyfin/sonarr/radarr/bazarr -
+        # set qBittorrent's default save path to /data/downloads after first login,
+        # so Sonarr/Radarr can hardlink instead of copy when importing.
+        existingClaim: media-data
+        globalMounts:
+          - path: /data
+      dev-tun:
+        type: hostPath
+        hostPath: /dev/net/tun
+        globalMounts:
+          - path: /dev/net/tun
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent-tailnet
+  namespace: media
+  annotations:
+    tailscale.com/hostname: qbittorrent
+spec:
+  type: LoadBalancer
+  loadBalancerClass: tailscale
+  selector:
+    app.kubernetes.io/name: qbittorrent
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

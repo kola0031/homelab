@@ -1,0 +1,72 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: jellyfin
+  namespace: media
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: app-template
+      version: "3.7.3"
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    # Without this, the chart's own name ("app-template") is used for
+    # app.kubernetes.io/name and the default resource names, instead of "jellyfin".
+    nameOverride: jellyfin
+    controllers:
+      main:
+        containers:
+          app:
+            image:
+              repository: jellyfin/jellyfin
+              tag: latest
+            env:
+              TZ: Etc/UTC
+            # No GPU passthrough configured - CPU-only transcoding.
+            resources:
+              requests:
+                cpu: 250m
+                memory: 512Mi
+              limits:
+                memory: 4Gi
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: 8096
+    persistence:
+      config:
+        existingClaim: jellyfin-config
+        globalMounts:
+          - path: /config
+      media:
+        # Mounted at the same /data path used by qbittorrent/sonarr/radarr/bazarr
+        # so root-folder settings line up across every app in the stack.
+        existingClaim: media-data
+        globalMounts:
+          - path: /data
+            readOnly: true
+---
+# Puts Jellyfin on the tailnet directly (MagicDNS name), independent of the
+# LAN-only jellyfin.local route below - for streaming while away from home.
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin-tailnet
+  namespace: media
+  annotations:
+    tailscale.com/hostname: jellyfin
+spec:
+  type: LoadBalancer
+  loadBalancerClass: tailscale
+  selector:
+    app.kubernetes.io/name: jellyfin
+  ports:
+    - name: http
+      port: 8096
+      targetPort: 8096
