@@ -1,13 +1,10 @@
 # media-data holds the shared library layout from the PRD (movies/tv/downloads/music/books)
 # as subPaths of one RWX volume, mounted read-write by whichever app needs each folder.
 #
-# PLACEHOLDER SIZE: kept small (well under actual node capacity) so Longhorn can
-# actually schedule a replica and the volume becomes attachable. A size Longhorn
-# can't fit anywhere (e.g. 1Ti against ~25-50Gi node disks) doesn't go Pending -
-# the PVC itself still binds, but the underlying volume never gets a replica and
-# every pod mounting it hangs in ContainerCreating with FailedAttachVolume /
-# "not ready for workloads". Bump this once a dedicated disk is attached to a
-# node (in Proxmox) and registered with Longhorn.
+# Backed by the dedicated 150Gi disk on andor-homelab-master (longhorn-media
+# StorageClass, single replica since that disk only exists on one node).
+# Longhorn reported ~146.6Gi actually available on that disk; requesting 130Gi
+# leaves headroom rather than filling it to the edge.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -16,10 +13,10 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: longhorn
+  storageClassName: longhorn-media
   resources:
     requests:
-      storage: 5Gi
+      storage: 130Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
