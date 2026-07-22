@@ -1,8 +1,9 @@
 # Separate from the default "longhorn" StorageClass (used for small config PVCs,
 # replicated 2x across all nodes' tiny root disks). This one targets only the
-# dedicated 150Gi disk on andor-homelab-master (tagged "media"), and uses a single
-# replica since that disk only exists on one node - a second replica could never
-# be scheduled, so requesting 2 would leave every volume permanently Degraded.
+# dedicated 150Gi disk (tagged "media", currently on andor-homelab-worker2), and
+# uses a single replica since that disk only exists on one node - a second
+# replica could never be scheduled, so requesting 2 would leave every volume
+# permanently Degraded.
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:

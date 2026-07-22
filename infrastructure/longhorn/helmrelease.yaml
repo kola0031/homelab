@@ -20,10 +20,13 @@ spec:
       # 3 nodes but small root disks (~25-50Gi each) - 2 replicas instead of the
       # default 3 leaves headroom and still survives a single node going down.
       defaultReplicaCount: 2
-      # andor-homelab-master carries the media-data disk but has the standard
-      # control-plane NoSchedule taint - without this, Longhorn's dynamically
-      # created per-node components (instance-manager, engine-image) never run
-      # there and the node never shows up under `kubectl get nodes.longhorn.io`.
+      # andor-homelab-master has the standard control-plane NoSchedule taint -
+      # without this, Longhorn's dynamically created per-node components
+      # (instance-manager, engine-image) never run there and the node never
+      # shows up under `kubectl get nodes.longhorn.io`. Still needed even though
+      # the media-data disk moved off master (to worker2) - master's own small
+      # root disk still participates in the default "longhorn" StorageClass
+      # used for config PVCs.
       taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule"
     persistence:
       defaultClassReplicaCount: 2

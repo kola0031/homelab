@@ -1,10 +1,12 @@
 # media-data holds the shared library layout from the PRD (movies/tv/downloads/music/books)
 # as subPaths of one RWX volume, mounted read-write by whichever app needs each folder.
 #
-# Backed by the dedicated 150Gi disk on andor-homelab-master (longhorn-media
+# Backed by the dedicated 150Gi disk on andor-homelab-worker2 (longhorn-media
 # StorageClass, single replica since that disk only exists on one node).
-# Longhorn reported ~146.6Gi actually available on that disk; requesting 130Gi
-# leaves headroom rather than filling it to the edge.
+# Originally attached to the control-plane node (andor-homelab-master), but
+# moved here since Longhorn's disk usage there competed with etcd/kube-apiserver
+# for CPU/RAM on an already-tight node. Longhorn reports ~147Gi actually
+# available; requesting 130Gi leaves headroom rather than filling it to the edge.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
