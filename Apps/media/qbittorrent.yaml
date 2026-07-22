@@ -37,14 +37,14 @@ spec:
     # Without this, the chart's own name ("app-template") is used for
     # app.kubernetes.io/name and the default resource names, instead of "qbittorrent".
     nameOverride: qbittorrent
-    # gluetun's WireGuard tunnel handshakes fine but never passes real traffic
-    # when run through Cilium's normal pod-network overlay (confirmed by testing
-    # the exact same server/credentials directly from a Mac on the same network,
-    # which worked instantly) - hostNetwork bypasses Cilium's datapath for this
-    # pod entirely. The existing Service/HTTPRoute keep working unchanged since
-    # Kubernetes Endpoints just track whatever IP the pod actually has.
-    defaultPodOptions:
-      hostNetwork: true
+    # REVERTED: hostNetwork briefly ran here to bypass Cilium's pod-network
+    # datapath (WireGuard handshakes but never passes real traffic through it -
+    # confirmed working fine from outside the cluster with identical credentials).
+    # It caused a much worse problem: gluetun's kill-switch firewall then applied
+    # to the WHOLE NODE instead of just this pod, and when the tunnel kept
+    # crashing (an unrelated IPv6 route-detection error), it took down networking
+    # for every other pod on that node - Flux, envoy-gateway, monitoring, all of
+    # it. Do not re-enable without a real fix for both issues first.
     controllers:
       main:
         containers:
