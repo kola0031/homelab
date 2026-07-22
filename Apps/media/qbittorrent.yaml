@@ -8,8 +8,10 @@
 # letting gluetun auto-pick from its Surfshark list - if this server goes offline,
 # update the secret with a new server's details from Surfshark's manual setup page.
 #
-# Server endpoint (us-dtw.prod.surfshark.com) and its public key are not secret,
+# Server endpoint (ca-tor.prod.surfshark.com) and its public key are not secret,
 # so they're hardcoded below. If this server goes offline, update both here.
+# (Switched from us-dtw.prod.surfshark.com - that server's WireGuard tunnel
+# never actually passed traffic, timing out on gluetun's healthcheck.)
 #
 # Prerequisite (create manually, do not commit): a Secret named
 # surfshark-credentials in the media namespace with keys:
@@ -45,9 +47,9 @@ spec:
             env:
               VPN_SERVICE_PROVIDER: custom
               VPN_TYPE: wireguard
-              WIREGUARD_ENDPOINT_IP: "185.141.119.54"
+              WIREGUARD_ENDPOINT_IP: "149.88.16.155"
               WIREGUARD_ENDPOINT_PORT: "51820"
-              WIREGUARD_PUBLIC_KEY: "WFhlLK8H1pRzgMggza5NhBMjIcGhmsCqjR8+yFRfXhg="
+              WIREGUARD_PUBLIC_KEY: "W9bzkcL3fiV64vDpB4pbrz8QafNn3y5P9Yc/kQvy4TA="
               WIREGUARD_PRIVATE_KEY:
                 valueFrom:
                   secretKeyRef:
