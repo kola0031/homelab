@@ -37,6 +37,14 @@ spec:
     # Without this, the chart's own name ("app-template") is used for
     # app.kubernetes.io/name and the default resource names, instead of "qbittorrent".
     nameOverride: qbittorrent
+    # gluetun's WireGuard tunnel handshakes fine but never passes real traffic
+    # when run through Cilium's normal pod-network overlay (confirmed by testing
+    # the exact same server/credentials directly from a Mac on the same network,
+    # which worked instantly) - hostNetwork bypasses Cilium's datapath for this
+    # pod entirely. The existing Service/HTTPRoute keep working unchanged since
+    # Kubernetes Endpoints just track whatever IP the pod actually has.
+    defaultPodOptions:
+      hostNetwork: true
     controllers:
       main:
         containers:
