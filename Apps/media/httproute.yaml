@@ -8,7 +8,7 @@ spec:
   - name: homelab-gateway
     namespace: monitoring
   hostnames:
-  - "jellyfin.local"
+  - "jellyfin.home"
   rules:
   - backendRefs:
     - name: jellyfin
@@ -24,7 +24,7 @@ spec:
   - name: homelab-gateway
     namespace: monitoring
   hostnames:
-  - "qb.local"
+  - "qb.home"
   rules:
   - backendRefs:
     - name: qbittorrent
@@ -40,7 +40,7 @@ spec:
   - name: homelab-gateway
     namespace: monitoring
   hostnames:
-  - "sonarr.local"
+  - "sonarr.home"
   rules:
   - backendRefs:
     - name: sonarr
@@ -56,7 +56,7 @@ spec:
   - name: homelab-gateway
     namespace: monitoring
   hostnames:
-  - "radarr.local"
+  - "radarr.home"
   rules:
   - backendRefs:
     - name: radarr
@@ -72,7 +72,7 @@ spec:
   - name: homelab-gateway
     namespace: monitoring
   hostnames:
-  - "prowlarr.local"
+  - "prowlarr.home"
   rules:
   - backendRefs:
     - name: prowlarr
@@ -88,7 +88,7 @@ spec:
   - name: homelab-gateway
     namespace: monitoring
   hostnames:
-  - "bazarr.local"
+  - "bazarr.home"
   rules:
   - backendRefs:
     - name: bazarr
