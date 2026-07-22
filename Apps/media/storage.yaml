@@ -1,10 +1,13 @@
 # media-data holds the shared library layout from the PRD (movies/tv/downloads/music/books)
 # as subPaths of one RWX volume, mounted read-write by whichever app needs each folder.
 #
-# PLACEHOLDER SIZE: no node currently has a disk big enough to back this - the k3s
-# nodes only have ~25-50Gi root disks. This PVC will stay Pending until a dedicated
-# disk is attached to a node (in Proxmox) and registered with Longhorn. Resize this
-# once you know the real capacity.
+# PLACEHOLDER SIZE: kept small (well under actual node capacity) so Longhorn can
+# actually schedule a replica and the volume becomes attachable. A size Longhorn
+# can't fit anywhere (e.g. 1Ti against ~25-50Gi node disks) doesn't go Pending -
+# the PVC itself still binds, but the underlying volume never gets a replica and
+# every pod mounting it hangs in ContainerCreating with FailedAttachVolume /
+# "not ready for workloads". Bump this once a dedicated disk is attached to a
+# node (in Proxmox) and registered with Longhorn.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -16,7 +19,7 @@ spec:
   storageClassName: longhorn
   resources:
     requests:
-      storage: 1Ti
+      storage: 5Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
