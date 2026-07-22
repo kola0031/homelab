@@ -20,5 +20,17 @@ spec:
       # 3 nodes but small root disks (~25-50Gi each) - 2 replicas instead of the
       # default 3 leaves headroom and still survives a single node going down.
       defaultReplicaCount: 2
+      # andor-homelab-master carries the media-data disk but has the standard
+      # control-plane NoSchedule taint - without this, Longhorn's dynamically
+      # created per-node components (instance-manager, engine-image) never run
+      # there and the node never shows up under `kubectl get nodes.longhorn.io`.
+      taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule"
     persistence:
       defaultClassReplicaCount: 2
+    global:
+      # Covers the Helm-rendered components (manager/UI/driver-deployer) - the
+      # dynamically created ones are handled by defaultSettings.taintToleration above.
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
